@@ -8,11 +8,15 @@
     <fragment
         android:id="@+id/productListFragment"
         android:name="com.sreejithsnair.instacart.views.ProductListFragment"
-        android:label="fragment_product_list"
-        tools:layout="@layout/fragment_product_list" >
+        android:label="Products"
+        tools:layout="@layout/fragment_product_list">
         <action
             android:id="@+id/action_productListFragment_to_productDetailsFragment"
-            app:destination="@id/productDetailsFragment" />
+            app:destination="@id/productDetailsFragment"
+            app:enterAnim="@anim/slide_inwards_right"
+            app:exitAnim="@anim/slide_outwards_left"
+            app:popEnterAnim="@anim/slide_inwards_left"
+            app:popExitAnim="@anim/slide_outwards_right" />
         <action
             android:id="@+id/action_productListFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
@@ -20,8 +24,8 @@
     <fragment
         android:id="@+id/productDetailsFragment"
         android:name="com.sreejithsnair.instacart.views.ProductDetailsFragment"
-        android:label="fragment_product_details"
-        tools:layout="@layout/fragment_product_details" >
+        android:label="Details"
+        tools:layout="@layout/fragment_product_details">
         <action
             android:id="@+id/action_productDetailsFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
@@ -29,8 +33,8 @@
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.sreejithsnair.instacart.views.CartFragment"
-        android:label="fragment_cart"
-        tools:layout="@layout/fragment_cart" >
+        android:label="Cart"
+        tools:layout="@layout/fragment_cart">
         <action
             android:id="@+id/action_cartFragment_to_finishedPurchaseFragment"
             app:destination="@id/finishedPurchaseFragment" />
@@ -38,10 +42,11 @@
     <fragment
         android:id="@+id/finishedPurchaseFragment"
         android:name="com.sreejithsnair.instacart.views.FinishedPurchaseFragment"
-        android:label="fragment_finished_purchase"
-        tools:layout="@layout/fragment_finished_purchase" >
+        android:label="Order"
+        tools:layout="@layout/fragment_finished_purchase">
         <action
             android:id="@+id/action_finishedPurchaseFragment_to_productListFragment"
-            app:destination="@id/productListFragment" />
+            app:destination="@id/productListFragment"
+            app:popUpTo="@id/productListFragment" />
     </fragment>
 </navigation>
