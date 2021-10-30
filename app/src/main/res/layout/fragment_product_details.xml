@@ -87,15 +87,24 @@
 
                 <Space
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp8" />
+                    android:layout_height="@dimen/dp32" />
 
-                <Button
-                    android:id="@+id/addToCartButton"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Add to cart"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+                    android:layout_marginTop="@dimen/dp8">
+
+                    <Button
+                        android:id="@+id/addToCartButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Add to cart"
+                        android:onClick="@{() -> productListViewModel.addItemToCart(productListViewModel.product)}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+                </RelativeLayout>
+
             </LinearLayout>
 
         </ScrollView>

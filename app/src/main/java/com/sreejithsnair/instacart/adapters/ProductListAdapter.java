@@ -2,8 +2,10 @@ package com.sreejithsnair.instacart.adapters;
 
 import static com.sreejithsnair.instacart.model.ProductModel.itemCallback;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Filter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ListAdapter;
@@ -34,6 +36,7 @@ public class ProductListAdapter extends ListAdapter<ProductModel, ProductListAda
 
         ProductModel productModel = getItem(position);
         holder.itemParticularsBinding.setProduct(productModel);
+        holder.itemParticularsBinding.executePendingBindings();
     }
 
     class ProductViewHolder extends RecyclerView.ViewHolder{

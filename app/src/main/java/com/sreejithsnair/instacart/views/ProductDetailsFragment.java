@@ -7,18 +7,25 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.sreejithsnair.instacart.R;
 import com.sreejithsnair.instacart.databinding.FragmentProductDetailsBinding;
+import com.sreejithsnair.instacart.generated.callback.OnClickListener;
 import com.sreejithsnair.instacart.viewmodel.ProductListViewModel;
 
 public class ProductDetailsFragment extends Fragment {
 
     FragmentProductDetailsBinding fragmentProductDetailsBinding;
     ProductListViewModel productListViewModel;
+
+
     public ProductDetailsFragment() {
         // Required empty public constructor
     }
@@ -35,7 +42,9 @@ public class ProductDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         productListViewModel = new ViewModelProvider(requireActivity()).get(ProductListViewModel.class);
         fragmentProductDetailsBinding.setProductListViewModel(productListViewModel);
+
     }
 }

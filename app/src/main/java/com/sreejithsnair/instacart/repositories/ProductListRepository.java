@@ -34,6 +34,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductListRepository {
     private MutableLiveData<List<ProductModel>> mutableProductList;
+    private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
+    LoginResponse loginResponse;
+    String token = "Bearer ";
+    boolean isLogedIn = false;
 
     private static Retrofit getRetrofit(){
 
@@ -55,23 +59,42 @@ public class ProductListRepository {
         return userService;
     }
 
-    public LiveData<List<ProductModel>> getProductList(){
+    public LiveData<List<ProductModel>> getProductList(String token){
         if(mutableProductList == null){
             mutableProductList = new MutableLiveData<>();
-            loadProductList();
+            loadProductList(token);
         }
 
         return mutableProductList;
     }
 
+    public LiveData<LoginResponse> logIn(LoginRequest loginRequest){
+        if(loginResponseMutableLiveData == null){
+            loginResponseMutableLiveData = new MutableLiveData<>();
+        }
+        Call<LoginResponse> loginResponseCall = ProductListRepository.getUserService().userLogin(loginRequest);
+        loginResponseCall.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if(response.isSuccessful()){
+                    loginResponse = response.body();
+                    loginResponseMutableLiveData.setValue(loginResponse);
+                }
+            }
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            }
+        });
+        return loginResponseMutableLiveData;
+    }
 
 
-    private void loadProductList(){
+
+    private void loadProductList(String token){
 
         ProductDetailsRequest productDetailsRequest = new ProductDetailsRequest();
         productDetailsRequest.setStart(1);
         productDetailsRequest.setLimit(20);
-        String token = "Bearer 232|6MkHVWa1d6OKEMsX5tSNNLTzp1tyQzKlc6BZysVX";
 
         Call<ProductListModel> productListModelCall = ProductListRepository.getUserService().getProductList(token,productDetailsRequest);
         productListModelCall.enqueue(new Callback<ProductListModel>() {
@@ -80,10 +103,7 @@ public class ProductListRepository {
                 if(response1.code() == 200){
                     ProductListModel productListModel = response1.body();
                     mutableProductList.setValue(productListModel.getResponseArray());
-                    Log.d("MOOOOSE", "success...." + productListModel.getResponseArray().toString());
                 }
-                else
-                    Log.d("MOOOOSE", "Something Fishy");
             }
 
             @Override

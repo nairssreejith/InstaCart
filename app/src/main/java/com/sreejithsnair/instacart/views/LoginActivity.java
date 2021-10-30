@@ -1,6 +1,8 @@
 package com.sreejithsnair.instacart.views;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import com.sreejithsnair.instacart.model.ProductListModel;
 import com.sreejithsnair.instacart.repositories.ProductListRepository;
 import com.sreejithsnair.instacart.requests.LoginRequest;
 import com.sreejithsnair.instacart.requests.ProductDetailsRequest;
+import com.sreejithsnair.instacart.viewmodel.ProductListViewModel;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     String email;
     String password;
 
+    ProductListViewModel productListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +62,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void init(){
         edtEmail = findViewById(R.id.edt_email);
-        edtEmail.setText("mtest1@mobatia.com");
         edtPassword = findViewById(R.id.edt_password);
-        edtPassword.setText("12345678");
         btnLogin = findViewById(R.id.btn_login);
     }
 
@@ -69,56 +71,22 @@ public class LoginActivity extends AppCompatActivity {
         loginRequest.setEmail(email);
         loginRequest.setPassword(password);
 
-        ProductDetailsRequest productDetailsRequest = new ProductDetailsRequest();
-        productDetailsRequest.setStart(1);
-        productDetailsRequest.setLimit(20);
-
-        Call<LoginResponse> loginResponseCall = ProductListRepository.getUserService().userLogin(loginRequest);
-        loginResponseCall.enqueue(new Callback<LoginResponse>() {
+        productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
+        productListViewModel.logIn(loginRequest).observe(this, new Observer<LoginResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if(response.isSuccessful()){
-                    Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_LONG).show();
-                    LoginResponse loginResponse = response.body();
-
-                    //startList("Bearer "+ loginResponse.getToken(), productDetailsRequest);
+            public void onChanged(LoginResponse loginResponse) {
+                if(loginResponse.getToken() != null){
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            Toast.makeText(LoginActivity.this,"Successfully logged in", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class).putExtra("token", loginResponse.getToken()));
+                            finish();
                         }
                     }, 800);
                 }
-                else
-
-                    Toast.makeText(LoginActivity.this, "What", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Failed" + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
-        }
-
-    public void startList(String token, ProductDetailsRequest productDetailsRequest){
-        Call<ProductListModel> productListModelCall = ProductListRepository.getUserService().getProductList(token,productDetailsRequest);
-        productListModelCall.enqueue(new Callback<ProductListModel>() {
-            @Override
-            public void onResponse(Call<ProductListModel> call, Response<ProductListModel> response1) {
-                if(response1.code() == 200){
-                    ProductListModel productListModel = response1.body();
-                    Log.d("MOOOOSE", "success...." + productListModel.getResponseArray().toString());
-                }
-                else
-                    Log.d("MOOOOSE", "Something Fishy");
-            }
-
-            @Override
-            public void onFailure(Call<ProductListModel> call, Throwable t) {
-
-            }
-        });
     }
 }
