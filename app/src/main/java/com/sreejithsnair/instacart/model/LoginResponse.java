@@ -3,9 +3,9 @@ package com.sreejithsnair.instacart.model;
 public class LoginResponse {
 
     private String token;
-    /*private int id;
-    private String name;
-    private String email;*/
+    private int id;
+    //private String name;
+    //private String email;
 
     public String getToken() {
         return token;
@@ -15,7 +15,7 @@ public class LoginResponse {
         this.token = token;
     }
 
-    /*public int getId() {
+    public int getId() {
         return id;
     }
 
@@ -23,7 +23,7 @@ public class LoginResponse {
         this.id = id;
     }
 
-    public String getName() {
+    /*public String getName() {
         return name;
     }
 

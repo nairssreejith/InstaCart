@@ -23,8 +23,8 @@ public class ProductListViewModel extends ViewModel {
 
     MutableLiveData<ProductModel> mutableProductModel = new MutableLiveData<>();
 
-    public LiveData<List<ProductModel>> getProducts(String token){
-        return productListRepository.getProductList(token);
+    public LiveData<List<ProductModel>> getProducts(){
+        return productListRepository.getProductList();
     }
 
     public void setProduct(ProductModel productModel){

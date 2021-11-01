@@ -37,7 +37,6 @@ public class ProductListRepository {
     private MutableLiveData<List<ProductModel>> mutableProductDetail;
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
     LoginResponse loginResponse;
-    String token;
 
     private static Retrofit getRetrofit(){
 
@@ -59,10 +58,10 @@ public class ProductListRepository {
         return userService;
     }
 
-    public LiveData<List<ProductModel>> getProductList(String token){
+    public LiveData<List<ProductModel>> getProductList(){
         if(mutableProductList == null){
             mutableProductList = new MutableLiveData<>();
-            loadProductList(token);
+            loadProductList();
         }
 
         return mutableProductList;
@@ -88,6 +87,7 @@ public class ProductListRepository {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if(response.isSuccessful()){
                     loginResponse = response.body();
+                    Credentials.token= "Bearer "+response.body().getToken();
                     loginResponseMutableLiveData.setValue(loginResponse);
                 }
             }
@@ -100,9 +100,8 @@ public class ProductListRepository {
 
 
 
-    private void loadProductList(String token){
-
-        this.token = token;
+    private void loadProductList(){
+        String token = Credentials.token;
         ProductDetailsRequest productDetailsRequest = new ProductDetailsRequest();
         productDetailsRequest.setStart(1);
         productDetailsRequest.setLimit(20);
@@ -126,6 +125,7 @@ public class ProductListRepository {
 
     private void loadProductDetail(int id){
 
+        String token = Credentials.token;
         Call<ProductListModel> productDetailCall = ProductListRepository.getUserService().getProductDetail(token,id);
         productDetailCall.enqueue(new Callback<ProductListModel>() {
             @Override

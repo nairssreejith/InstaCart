@@ -54,24 +54,17 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        token = "Bearer ";
-
-       if (getActivity().getIntent().getExtras() != null) {
-             token += getActivity().getIntent().getStringExtra("token");
-        }
 
         productListAdapter = new ProductListAdapter(this);
         fragmentProductListBinding.recyclerViewProductList.setAdapter(productListAdapter);
 
-        if(token != "Bearer "){
             productListViewModel = new ViewModelProvider(requireActivity()).get(ProductListViewModel.class);
-            productListViewModel.getProducts(token).observe(getViewLifecycleOwner(), new Observer<List<ProductModel>>() {
+            productListViewModel.getProducts().observe(getViewLifecycleOwner(), new Observer<List<ProductModel>>() {
                 @Override
                 public void onChanged(List<ProductModel> productModels) {
                     productListAdapter.submitList(productModels);
                 }
             });
-        }
 
         navController = Navigation.findNavController(view);
     }

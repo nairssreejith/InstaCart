@@ -75,16 +75,14 @@ public class LoginActivity extends AppCompatActivity {
         productListViewModel.logIn(loginRequest).observe(this, new Observer<LoginResponse>() {
             @Override
             public void onChanged(LoginResponse loginResponse) {
-                if(loginResponse.getToken() != null){
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(LoginActivity.this,"Successfully logged in", Toast.LENGTH_LONG).show();
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class).putExtra("token", loginResponse.getToken()));
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         }
                     }, 800);
-                }
             }
         });
 
