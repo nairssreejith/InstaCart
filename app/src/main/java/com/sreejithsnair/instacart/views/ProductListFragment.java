@@ -1,5 +1,6 @@
 package com.sreejithsnair.instacart.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import com.sreejithsnair.instacart.R;
 import com.sreejithsnair.instacart.adapters.ProductListAdapter;
 import com.sreejithsnair.instacart.databinding.FragmentProductListBinding;
+import com.sreejithsnair.instacart.model.ProductListModel;
 import com.sreejithsnair.instacart.model.ProductModel;
 import com.sreejithsnair.instacart.viewmodel.ProductListViewModel;
 
@@ -75,12 +78,22 @@ public class ProductListFragment extends Fragment implements ProductListAdapter.
 
     @Override
     public void addProduct(ProductModel productModel) {
-        boolean isAdded = productListViewModel.addItemToCart(productModel);
-        Log.d("Moose", "addProduct: " + productModel.getTitle() + isAdded);
     }
 
     @Override
     public void onProductClick(ProductModel productModel) {
+        int id = productModel.getId();
+        productListViewModel = new ViewModelProvider(requireActivity()).get(ProductListViewModel.class);
+        try {
+            productListViewModel.getProductDetails(id).observe(getViewLifecycleOwner(), new Observer<List<ProductModel>>() {
+                @Override
+                public void onChanged(List<ProductModel> productModels) {
+                    productListViewModel.setProduct(productModels.get(1));
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         productListViewModel.setProduct(productModel);
         navController.navigate(R.id.action_productListFragment_to_productDetailsFragment);
     }

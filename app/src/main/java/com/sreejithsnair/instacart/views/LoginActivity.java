@@ -62,7 +62,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void init(){
         edtEmail = findViewById(R.id.edt_email);
+        edtEmail.setText("mtest1@mobatia.com");
         edtPassword = findViewById(R.id.edt_password);
+        edtPassword.setText("12345678");
         btnLogin = findViewById(R.id.btn_login);
     }
 

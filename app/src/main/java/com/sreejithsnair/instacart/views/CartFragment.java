@@ -27,6 +27,7 @@ public class CartFragment extends Fragment implements CartListAdapter.CartInterf
     ProductListViewModel productListViewModel;
     FragmentCartBinding fragmentCartBinding;
     NavController navController;
+    CartListAdapter cartListAdapter;
 
     public CartFragment() {
         // Required empty public constructor
@@ -46,8 +47,9 @@ public class CartFragment extends Fragment implements CartListAdapter.CartInterf
 
         navController = Navigation.findNavController(view);
 
-        CartListAdapter cartListAdapter = new CartListAdapter(this);
+        cartListAdapter = new CartListAdapter(this);
         fragmentCartBinding.cartRecyclerView.setAdapter(cartListAdapter);
+
 
 
         productListViewModel = new ViewModelProvider(requireActivity()).get(ProductListViewModel.class);
@@ -55,6 +57,7 @@ public class CartFragment extends Fragment implements CartListAdapter.CartInterf
             @Override
             public void onChanged(List<CartProductModel> cartProductModels) {
                 cartListAdapter.submitList(cartProductModels);
+                fragmentCartBinding.placeOrder.setEnabled(cartProductModels.size()>0);
             }
         });
 

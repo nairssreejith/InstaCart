@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -16,14 +17,21 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.sreejithsnair.instacart.R;
+import com.sreejithsnair.instacart.database.Cart;
+import com.sreejithsnair.instacart.database.CartDatabase;
 import com.sreejithsnair.instacart.databinding.FragmentProductDetailsBinding;
-import com.sreejithsnair.instacart.generated.callback.OnClickListener;
+import com.sreejithsnair.instacart.model.ProductModel;
 import com.sreejithsnair.instacart.viewmodel.ProductListViewModel;
+
+import java.util.List;
 
 public class ProductDetailsFragment extends Fragment {
 
     FragmentProductDetailsBinding fragmentProductDetailsBinding;
     ProductListViewModel productListViewModel;
+
+    CartDatabase cartDatabase;
+    Cart cart;
 
 
     public ProductDetailsFragment() {
@@ -42,9 +50,19 @@ public class ProductDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        cartDatabase = CartDatabase.getInstance(getContext());
 
         productListViewModel = new ViewModelProvider(requireActivity()).get(ProductListViewModel.class);
         fragmentProductDetailsBinding.setProductListViewModel(productListViewModel);
 
+        fragmentProductDetailsBinding.addToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                productListViewModel.insertIntoCartBD(cart, cartDatabase);
+                Log.d("Database", "Add to Cart OnClick Hit");
+            }
+        });
+
     }
+
 }

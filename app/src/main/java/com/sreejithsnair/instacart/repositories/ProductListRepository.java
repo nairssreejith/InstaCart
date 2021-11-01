@@ -34,10 +34,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProductListRepository {
     private MutableLiveData<List<ProductModel>> mutableProductList;
+    private MutableLiveData<List<ProductModel>> mutableProductDetail;
     private MutableLiveData<LoginResponse> loginResponseMutableLiveData;
     LoginResponse loginResponse;
-    String token = "Bearer ";
-    boolean isLogedIn = false;
+    String token;
 
     private static Retrofit getRetrofit(){
 
@@ -68,6 +68,16 @@ public class ProductListRepository {
         return mutableProductList;
     }
 
+
+    public LiveData<List<ProductModel>> getProductDetails(int id){
+        if(mutableProductDetail == null){
+            mutableProductDetail = new MutableLiveData<>();
+            loadProductDetail(id);
+        }
+
+        return mutableProductDetail;
+    }
+
     public LiveData<LoginResponse> logIn(LoginRequest loginRequest){
         if(loginResponseMutableLiveData == null){
             loginResponseMutableLiveData = new MutableLiveData<>();
@@ -92,6 +102,7 @@ public class ProductListRepository {
 
     private void loadProductList(String token){
 
+        this.token = token;
         ProductDetailsRequest productDetailsRequest = new ProductDetailsRequest();
         productDetailsRequest.setStart(1);
         productDetailsRequest.setLimit(20);
@@ -103,6 +114,26 @@ public class ProductListRepository {
                 if(response1.code() == 200){
                     ProductListModel productListModel = response1.body();
                     mutableProductList.setValue(productListModel.getResponseArray());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProductListModel> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void loadProductDetail(int id){
+
+        Call<ProductListModel> productDetailCall = ProductListRepository.getUserService().getProductDetail(token,id);
+        productDetailCall.enqueue(new Callback<ProductListModel>() {
+            @Override
+            public void onResponse(Call<ProductListModel> call, Response<ProductListModel> response) {
+                if(response.code() == 200){
+                    ProductListModel productListModel = response.body();
+                    mutableProductDetail.setValue(productListModel.getResponseArray());
+                    Log.v("Moose", productListModel.getResponseArray().get(0).getTitle());
                 }
             }
 

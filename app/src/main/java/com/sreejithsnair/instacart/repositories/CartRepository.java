@@ -1,8 +1,12 @@
 package com.sreejithsnair.instacart.repositories;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.sreejithsnair.instacart.database.Cart;
+import com.sreejithsnair.instacart.database.CartDatabase;
 import com.sreejithsnair.instacart.model.CartProductModel;
 import com.sreejithsnair.instacart.model.ProductModel;
 
@@ -12,12 +16,16 @@ import java.util.List;
 public class CartRepository {
 
     private MutableLiveData<List<CartProductModel>> mutableCart = new MutableLiveData<>();
-
     private MutableLiveData<Double> mutableTotalPrice = new MutableLiveData<>();
+
+    Cart cart;
+    CartDatabase db;
+
     public LiveData<List<CartProductModel>> getCart(){
         if(mutableCart.getValue() == null){
             initializeCart();
         }
+
         return mutableCart;
     }
 
@@ -35,7 +43,6 @@ public class CartRepository {
             if(cartProductModel.getProductModel().getId().equals(productModel.getId())){
                 int index = cartProductModelList.indexOf(cartProductModel);
                 cartProductModel.setQuantity(cartProductModel.getQuantity()+1);
-
                 cartProductModelList.set(index, cartProductModel);
                 mutableCart.setValue(cartProductModelList);
                 cartTotal();
@@ -54,7 +61,6 @@ public class CartRepository {
         if(mutableCart.getValue()==null){
             return;
         }
-
         List<CartProductModel> cartProductModelList = new ArrayList<>(mutableCart.getValue());
         cartProductModelList.remove(cartProductModel);
         mutableCart.setValue(cartProductModelList);
@@ -78,4 +84,37 @@ public class CartRepository {
         }
         mutableTotalPrice.setValue(total);
     }
+
+    public void insertIntoCartBD(Cart cart, CartDatabase db){
+        this.cart = cart;
+        this.db = db;
+    }
+
+    /*
+
+     ****************************   Needs to be Worked on   *******************************
+
+    private void insertToCart(CartProductModel cartProductModel){
+        try {
+            if(cartProductModel != null){
+                cart.setItem_id(cartProductModel.getProductModel().getId());
+                cart.setItem_image(cartProductModel.getProductModel().getImage());
+                cart.setItem_price(cartProductModel.getProductModel().getPrice());
+                cart.setItem_title(cartProductModel.getProductModel().getTitle());
+                cart.setItem_quantity(cartProductModel.getQuantity());
+
+                db.getCartDao().insertCart(cart);
+                Log.d("Database", cart.toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.d("Database", "cart to string didn't hit");
+
+    }
+
+    private void LoadCartContents(){
+        db.getCartDao().getCart();
+        Log.d("Database", db.getCartDao().getCart().toString());
+    }*/
 }
